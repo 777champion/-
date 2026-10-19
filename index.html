@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博七珍藏回憶錄 · 感謝現役</title>
+    <!-- 引入 Font Awesome 質感圖標與 Google 字體 -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #121620;
+            --card-bg: #1c2333;
+            --text-color: #ffffff;
+            --gold-color: #f1c40f;
+            --btn-hover: #f39c12;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--gold-color);
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: #8e9aaf;
+            line-height: 1.6;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* 照片顯示區域 */
+        .photo-display {
+            width: 100%;
+            height: 380px;
+            background-color: #0b0e14;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            border: 2px dashed #343f56;
+            transition: border 0.3s;
+        }
+        .photo-display img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0.3; }
+            to { opacity: 1; }
+        }
+
+        .photo-placeholder {
+            color: #5c6b84;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* 情感文案顯示區域 */
+        .text-display {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-weight: 500;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--gold-color);
+        }
+
+        /* 核心按鈕 */
+        .btn-gold {
+            background-color: var(--gold-color);
+            color: #121620;
+            border: none;
+            padding: 14px 35px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(241, 196, 15, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-gold:hover {
+            background-color: var(--btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(241, 196, 15, 0.4);
+        }
+        .btn-gold:active {
+            transform: translateY(0);
+        }
+
+        /* 金雨特效粒子 */
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            top: -10px;
+            z-index: 999;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(105vh) rotate(360deg); }
+        }
+
+        footer {
+            margin-top: 50px;
+            font-size: 0.8rem;
+            color: #4f5d75;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1><i class="fa-solid fa-star"></i> 博七珍藏回憶錄</h1>
+            <div class="subtitle">
+                首發：捏捏、回憶、桃晚安、過客、空調 ｜ 替補：武智<br>
+                「靠近你就靠近了痛苦，遠離你就遠離了幸福」
+            </div>
+        </header>
+
+        <!-- 回憶錄主卡片 -->
+        <div class="card">
+            <!-- 情感文案區 -->
+            <div class="text-display" id="quote-box">
+                「點擊下方按鈕，翻開屬於博七這群奮力奔跑少年的熱血夏天...」
+            </div>
+            
+            <!-- 照片顯示區 -->
+            <div class="photo-display" id="photo-container">
+                <div class="photo-placeholder" id="placeholder-text">
+                    <i class="fa-solid fa-camera-retro" style="font-size:2.5rem; margin-bottom:12px; color:var(--gold-color);"></i><br>
+                    那些關於金雨、淚水與青春的故事<br>靜待一鍵解鎖...
+                </div>
+                <img id="memory-img" src="" alt="博七珍貴回憶">
+            </div>
+            
+            <!-- 隨機抽卡按鈕 -->
+            <button class="btn-gold" onclick="drawMemory()">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> 隨機翻開下一頁回憶
+            </button>
+        </div>
+
+        <footer>
+            感謝現役，感謝你們成為博七。<br>
+            你們永遠是那驕傲的少年。
+        </footer>
+    </div>
+
+    <script>
+        // ==========================================
+        // ✨ 在這裡無限新增你想放的照片和想說的話！ ✨
+        // ==========================================
+        const memoryDatabase = [
+            {
+                quote: "2025夏決，空調在桌上給小桃堆了一小堆金雨。雖然輸給狼隊止步亞軍，但我們是站著輸的。",
+                img: "wbg1.jpg"
+            },
+            {
+                quote: "「捏神恩情還不完！」",
+                img: "wbg2.jpg"
+            },
+            {
+                quote: "「不管考得怎樣，全家都很愛你」",
+                img: "wbg3.jpg"
+            },
+            {
+                quote: "「八強只是起點好嗎！」",
+                img: "wbg4.jpg"
+            },
+            {
+                quote: "「沒關係的，我們總會有下一個明天的」",
+                img: "wbg5.jpg"
+            },
+            {
+                quote: "WBG我真的沒空陪你鬧了",
+                img: "wbg6.jpg"
+            },
+            {
+                quote: "「盼金雨，夜無眠」",
+                img: "wbg7.jpg"
+            },
+            {
+                quote: "博七我們不會再輸了，因為我們沒有明天了",
+                img: "wbg8.jpg"
+            },
+            {
+                quote: "從前是隊友，往後是對手",
+                img: "wbg9.jpg"
+            },
+            {
+                quote: "那個夏天，究竟發生了什麼",
+                img: "wbg10.jpg"
+            },
+            {
+                quote: "感謝現役，感謝你們成為博七",
+                img: "wbg11.jpg"
+            },
+            {
+                quote: "要中用啊我的寶",
+                img: "wbg12.jpg"
+            },
+            {
+                quote: "上吊的眼雜",
+                img: "wbg13.jpg"
+            },
+            {
+                quote: "激動的眼雜",
+                img: "wbg14.jpg"
+            },
+            {
+                quote: "絕望的眼雜",
+                img: "wbg15.jpg"
+            },
+            {
+                quote: "不敢看的眼雜",
+                img: "wbg16.jpg"
+            },
+            {
+                quote: "流淚的眼雜",
+                img: "wbg17.jpg"
+            },
+            {
+                quote: "得意的眼雜",
+                img: "wbg18.jpg"
+            },
+            {
+                quote: "調教主隊中……",
+                img: "wbg19.jpg"
+            },
+            {
+                quote: "當時只道是尋常",
+                img: "wbg20.jpg"
+            },
+            {
+                quote: "「我最多陪你玩7分鐘」",
+                img: "wbg21.jpg"
+            },
+            {
+                quote: "「天天開心」",
+                img: "wbg22.jpg"
+            },
+            {
+                quote: "「白水鑑心」",
+                img: "wbg23.jpg"
+            },
+            {
+                quote: "「麵包會有的，一切會有的」",
+                img: "wbg24.jpg"
+            },
+            {
+                quote: "「不負少年遊」",
+                img: "wbg25.jpg"
+            },
+            {
+                quote: "「世界啊，臣服於我！」",
+                img: "wbg26.jpg"
+            },
+            {
+                quote: "這期是我定制的勝者組全家福",
+                img: "wbg27.jpg"
+            },
+            {
+                quote: "迪士尼爭奪戰",
+                img: "wbg28.jpg"
+            },
+            {
+                quote: "「太陽，太陽，請你告訴我。為什麼，為什麼，遺憾那麼多？」",
+                img: "wbg29.jpg"
+            },
+        ];
+
+        let lastIndex = -1;
+
+        // 核心隨機抽卡函數
+        function drawMemory() {
+            const quoteBox = document.getElementById('quote-box');
+            const memoryImg = document.getElementById('memory-img');
+            const placeholder = document.getElementById('placeholder-text');
+            const container = document.getElementById('photo-container');
+
+            // 防止連續抽到同一張
+            let randomIndex = Math.floor(Math.random() * memoryDatabase.length);
+            while (randomIndex === lastIndex && memoryDatabase.length > 1) {
+                randomIndex = Math.floor(Math.random() * memoryDatabase.length);
+            }
+            lastIndex = randomIndex;
+
+            const selected = memoryDatabase[randomIndex];
+
+            // 更換內容與圖片路聯
+            quoteBox.innerText = selected.quote;
+            memoryImg.src = selected.img;
+            
+            // 顯示圖片、隱藏預設文字
+            memoryImg.style.display = 'block';
+            placeholder.style.display = 'none';
+            container.style.border = '2px solid var(--gold-color)';
+
+            // 觸發滿畫面金雨特效
+            createGoldRain();
+        }
+
+        // 金雨粒子特效生成器
+        function createGoldRain() {
+            for (let i = 0; i < 40; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.animationDelay = Math.random() * 0.4 + 's';
+                confetti.style.animationDuration = Math.random() * 1.5 + 1.2 + 's';
+                
+                // 隨機金黃色與亮白色，呈現金雨灑落感
+                const colors = ['#f1c40f', '#f39c12', '#f5cd3c', '#ffffff', '#ffeaa7'];
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                document.body.appendChild(confetti);
+
+                // 自動清除粒子，優化效能
+                setTimeout(() => { confetti.remove(); }, 2500);
+            }
+        }
+    </script>
+</body>
+</html>
